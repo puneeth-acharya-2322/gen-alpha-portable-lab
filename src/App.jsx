@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Cpu, 
-  Terminal, 
-  BookOpen, 
-  ShieldCheck, 
-  Package, 
-  ChevronRight, 
-  Mail, 
-  Phone, 
-  MapPin, 
-  CheckCircle2, 
-  Users, 
-  Building2, 
-  GraduationCap, 
+import {
+  Cpu,
+  Terminal,
+  BookOpen,
+  ShieldCheck,
+  Package,
+  ChevronRight,
+  Mail,
+  Phone,
+  MapPin,
+  CheckCircle2,
+  Users,
+  Building2,
+  GraduationCap,
   Briefcase,
   Layers,
   Zap,
@@ -70,7 +70,7 @@ const Navbar = ({ onOpenModal }) => {
               {link.name}
             </Link>
           ))}
-          <button 
+          <button
             onClick={onOpenModal}
             className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-full text-sm font-semibold transition-all hover:shadow-[0_0_20px_rgba(37,99,235,0.4)] active:scale-95"
           >
@@ -107,7 +107,7 @@ const Navbar = ({ onOpenModal }) => {
                 {link.name}
               </Link>
             ))}
-            <button 
+            <button
               onClick={() => { onOpenModal(); setMobileMenuOpen(false); }}
               className="w-full py-4 bg-blue-600 text-white rounded-xl font-bold"
             >
@@ -125,14 +125,14 @@ const Modal = ({ isOpen, onClose, initialType = 'demo' }) => {
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         className="absolute inset-0 bg-black/80 backdrop-blur-sm"
         onClick={onClose}
       />
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, scale: 0.9, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         className="relative bg-[#0f172a] border border-slate-700 w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl shadow-2xl p-8"
@@ -217,6 +217,8 @@ const Modal = ({ isOpen, onClose, initialType = 'demo' }) => {
           </button>
         </form>
       </motion.div>
+      <br></br>
+
     </div>
   );
 };
@@ -230,7 +232,7 @@ const Hero = ({ onOpenModal }) => (
     <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-purple-600/10 blur-[120px] pointer-events-none"></div>
 
     <div className="container grid md:grid-cols-2 gap-12 items-center">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, x: -50 }}
         whileInView={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.8 }}
@@ -243,7 +245,7 @@ const Hero = ({ onOpenModal }) => (
           What is the <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">Gen-Alpha Portable Lab?</span>
         </h1>
         <p className="text-lg text-slate-400 mb-8 max-w-xl">
-          An all-in-one Electronics learning kit and portable lab for students from Class 6 to Engineering 2nd year. 
+          An all-in-one Electronics learning kit and portable lab for students from Class 6 to Engineering 2nd year.
           Students learn electronics, coding, and IoT by building real circuits on a single 11.2 inch tablet-based system.
         </p>
         <div className="flex flex-wrap gap-4 mb-10">
@@ -257,10 +259,10 @@ const Hero = ({ onOpenModal }) => (
         <div className="flex items-center gap-3 text-slate-500 text-sm">
           <Package size={18} className="text-blue-500" />
           <span>Includes all required sensors, wires, and components.</span>
-        </div>
+        </div><br></br>
       </motion.div>
 
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
         whileInView={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.8 }}
@@ -271,7 +273,7 @@ const Hero = ({ onOpenModal }) => (
           <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl blur opacity-30 group-hover:opacity-50 transition duration-1000"></div>
           <img src="/assets/student_using_kit.jpg" alt="Student using kit" className="relative rounded-3xl shadow-2xl border border-slate-700 group-hover:scale-[1.02] transition-transform duration-500" />
         </div>
-        
+
         {/* Floating Stats */}
         <div className="absolute -bottom-6 -left-6 glass-card p-4 rounded-2xl max-w-[180px] hidden lg:block">
           <div className="flex items-center gap-3 mb-2">
@@ -288,24 +290,27 @@ const Hero = ({ onOpenModal }) => (
     {/* Horizontal Strip */}
     <div className="container mt-20 grid grid-cols-1 md:grid-cols-3 gap-6">
       <div className="h-64 rounded-3xl overflow-hidden border border-slate-800 shadow-lg group">
-        <img src="/assets/kit_closed.jpg" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Kit closed" />
+        <img src="/assets/case.png" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Kit closed" />
       </div>
       <div className="h-64 rounded-3xl overflow-hidden border border-slate-800 shadow-lg group">
-        <img src="/assets/kit_open_internals.jpg" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Tablet interface" />
+        <img src="/assets/fullbox.png" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Tablet interface" />
       </div>
       <div className="h-64 rounded-3xl overflow-hidden border border-slate-800 shadow-lg flex flex-col justify-center items-center bg-slate-900 font-bold p-8 text-center group">
-         <div className="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-           <Zap className="text-white" size={24} />
-         </div>
-         <h4 className="text-xl">One Lab. Infinite Possibilities.</h4>
-         <p className="text-sm text-slate-500 mt-2 font-normal">Building real experiments from class 6 to engineering.</p>
+        <div className="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+          <Zap className="text-white" size={24} />
+        </div>
+        <h4 className="text-xl">One Lab. Infinite Possibilities.</h4>
+        <p className="text-sm text-slate-500 mt-2 font-normal">Building real experiments from class 6 to engineering.</p>
       </div>
     </div>
+    <br></br>
+
   </section>
 );
 
 const About = () => (
   <section id="about" className="section-padding bg-slate-900/30">
+    <br></br>
     <div className="container">
       <div className="text-center max-w-3xl mx-auto mb-16">
         <h2 className="section-title">What makes this a complete portable lab?</h2>
@@ -356,16 +361,19 @@ const About = () => (
 
         <div className="relative group">
           <div className="absolute -inset-4 bg-blue-500/5 blur-3xl opacity-0 group-hover:opacity-100 transition duration-1000"></div>
-          <img src="/assets/kit_open_internals.jpg" className="rounded-3xl border border-slate-800 shadow-2xl relative" alt="Labeled Kit" />
+          <img src="/assets/openbox.png" className="rounded-3xl border border-slate-800 shadow-2xl relative" alt="Labeled Kit" />
           {/* Labeled highlights could go here in absolute position overlay */}
         </div>
       </div>
     </div>
+    <br></br>
+    <br></br>
   </section>
 );
 
 const Statistics = () => (
   <section id="need" className="section-padding">
+    <br></br>
     <div className="container">
       <div className="text-center max-w-3xl mx-auto mb-16">
         <h2 className="section-title">Why do students need hands-on electronics learning today?</h2>
@@ -400,14 +408,17 @@ const Statistics = () => (
         </div>
       </div>
     </div>
+    <br></br>
+    <br></br>
   </section>
 );
 
 const TargetUsers = () => (
   <section id="users" className="section-padding bg-slate-900/20">
+    <br></br>
     <div className="container">
       <h2 className="section-title">Who is the Gen-Alpha Portable Lab designed for?</h2>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
           { icon: <GraduationCap />, title: "Students", list: ["Class 6 to 12 fundamentals", "Diploma and Degree engineering", "Active hands-on learners"] },
@@ -432,14 +443,17 @@ const TargetUsers = () => (
         ))}
       </div>
     </div>
+    <br></br>
+    <br></br>
   </section>
 );
 
 const Features = () => (
   <section id="features" className="section-padding">
+    <br></br>
     <div className="container">
       <h2 className="section-title">What can students do with the Gen-Alpha Portable Lab?</h2>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {[
           { q: "Includes all required components?", a: "Yes. All sensors, wires, connectors, and electronics components required for experiments are included." },
@@ -456,18 +470,21 @@ const Features = () => (
         ))}
       </div>
     </div>
+    <br></br>
+    <br></br>
   </section>
 );
 
 const HowItWorks = () => (
   <section className="section-padding bg-slate-900/40 relative">
+    <br></br>
     <div className="container">
       <h2 className="section-title">How does a student use the lab?</h2>
-      
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 relative">
         {/* Connector Line (Desktop) */}
         <div className="hidden lg:block absolute top-1/2 left-[15%] right-[15%] h-0.5 bg-gradient-to-r from-blue-500/50 via-purple-500/50 to-cyan-500/50 -translate-y-1/2 z-0"></div>
-        
+
         {[
           { step: "1", title: "Select", desc: "Choose a concept or experiment on the built-in tablet interface." },
           { step: "2", title: "Build", desc: "Construct the circuit using the included sensors and solder-free wiring." },
@@ -482,16 +499,19 @@ const HowItWorks = () => (
           </div>
         ))}
       </div>
-      
+
       <div className="mt-16 text-center">
-         <p className="text-slate-400 italic">Students can repeat, modify, and extend experiments independently.</p>
+        <p className="text-slate-400 italic">Students can repeat, modify, and extend experiments independently.</p>
       </div>
     </div>
+    <br></br>
+    <br></br>
   </section>
 );
 
 const Pricing = ({ onOpenModal }) => (
   <section id="pricing" className="section-padding">
+    <br></br>
     <div className="container">
       <div className="text-center max-w-2xl mx-auto mb-16">
         <h2 className="section-title">How much does it cost?</h2>
@@ -534,63 +554,67 @@ const Pricing = ({ onOpenModal }) => (
         </div>
       </div>
     </div>
+    <br></br>
+    <br></br>
   </section>
 );
 
 const Footer = ({ onOpenModal }) => (
   <footer id="contact" className="section-padding border-t border-slate-900 bg-black/40">
+    <br></br>
     <div className="container">
       <div className="grid md:grid-cols-2 gap-12 mb-16 items-center">
         <div>
-           <h2 className="text-4xl font-bold mb-6 leading-tight">Ready to transform hands-on learning?</h2>
-           <p className="text-slate-500 mb-8 max-w-md">Our team reviews every demo request personally to ensure we bring the right configuration to your institution.</p>
-           <button onClick={() => onOpenModal('demo')} className="px-10 py-5 bg-white text-black hover:bg-slate-200 rounded-2xl font-black transition-all shadow-xl active:scale-95">
-             Book a Free Demo
-           </button>
+          <h2 className="text-4xl font-bold mb-6 leading-tight">Ready to transform hands-on learning?</h2>
+          <p className="text-slate-500 mb-8 max-w-md">Our team reviews every demo request personally to ensure we bring the right configuration to your institution.</p>
+          <button onClick={() => onOpenModal('demo')} className="px-10 py-5 bg-white text-black hover:bg-slate-200 rounded-2xl font-black transition-all shadow-xl active:scale-95">
+            Book a Free Demo
+          </button>
         </div>
-        
+
         <div className="space-y-6">
           <div className="flex gap-4 items-start">
-             <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center shrink-0">
-               <MapPin className="text-blue-400" size={20} />
-             </div>
-             <div>
-               <h5 className="font-bold">Address</h5>
-               <p className="text-slate-400 text-sm">Dashapatmaja Solutions Pvt. Ltd., Manipal</p>
-             </div>
+            <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center shrink-0">
+              <MapPin className="text-blue-400" size={20} />
+            </div>
+            <div>
+              <h5 className="font-bold">Address</h5>
+              <p className="text-slate-400 text-sm">Dashapatmaja Solutions Pvt. Ltd., Manipal</p>
+            </div>
           </div>
           <div className="flex gap-4 items-start">
-             <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center shrink-0">
-               <Mail className="text-blue-400" size={20} />
-             </div>
-             <div>
-               <h5 className="font-bold">Email</h5>
-               <p className="text-slate-400 text-sm">dsplmanipal@gmail.com</p>
-             </div>
+            <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center shrink-0">
+              <Mail className="text-blue-400" size={20} />
+            </div>
+            <div>
+              <h5 className="font-bold">Email</h5>
+              <p className="text-slate-400 text-sm">dsplmanipal@gmail.com</p>
+            </div>
           </div>
           <div className="flex gap-4 items-start">
-             <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center shrink-0">
-               <Phone className="text-blue-400" size={20} />
-             </div>
-             <div>
-               <h5 className="font-bold">Phone</h5>
-               <p className="text-slate-400 text-sm">+91 77600 42810</p>
-             </div>
+            <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center shrink-0">
+              <Phone className="text-blue-400" size={20} />
+            </div>
+            <div>
+              <h5 className="font-bold">Phone</h5>
+              <p className="text-slate-400 text-sm">+91 77600 42810</p>
+            </div>
           </div>
         </div>
       </div>
-      
+
       <div className="border-t border-slate-900 pt-10 flex flex-col md:flex-row justify-between items-center gap-6">
         <div className="flex flex-col items-center md:items-start">
-           <div className="flex items-center gap-2 mb-2">
+          <div className="flex items-center gap-2 mb-2">
             <Cpu className="text-blue-500" size={20} />
             <span className="font-bold">Gen-Alpha Portable Lab</span>
-           </div>
-           <p className="text-[10px] text-slate-600 font-bold uppercase tracking-widest">Empowering Next-Gen Engineers</p>
+          </div>
+          <p className="text-[10px] text-slate-600 font-bold uppercase tracking-widest">Empowering Next-Gen Engineers</p>
         </div>
         <p className="text-xs text-slate-600">&copy; {new Date().getFullYear()} Dashapatmaja Solutions Pvt. Ltd. All rights reserved.</p>
       </div>
     </div>
+    <br></br>
   </footer>
 );
 
@@ -608,7 +632,7 @@ export default function App() {
   return (
     <div className="app-root bg-[#020617] text-slate-100 min-h-screen selection:bg-blue-500/30">
       <Navbar onOpenModal={() => openModal('demo')} />
-      
+
       <Hero onOpenModal={openModal} />
       <About />
       <Statistics />
