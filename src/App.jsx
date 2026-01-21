@@ -7,6 +7,7 @@ import {
   ShieldCheck,
   Package,
   ChevronRight,
+  ChevronLeft,
   Mail,
   Phone,
   MapPin,
@@ -22,7 +23,10 @@ import {
   Menu,
   Info,
   ChevronDown,
-  Laptop
+  Laptop,
+  Facebook,
+  Linkedin,
+  Instagram
 } from 'lucide-react';
 import { Link, animateScroll as scroll } from 'react-scroll';
 
@@ -41,8 +45,8 @@ const Navbar = ({ onOpenModal }) => {
   const navLinks = [
     { name: 'Overview', target: 'about' },
     { name: 'Need', target: 'need' },
-    { name: 'Audience', target: 'users' },
-    { name: 'Features', target: 'features' },
+    { name: 'Who is it for?', target: 'users' },
+    { name: 'FAQ', target: 'features' },
     { name: 'Pricing', target: 'pricing' },
     { name: 'Contact us', target: 'contact' },
   ];
@@ -289,7 +293,6 @@ const ImageSlider = ({ customImages, aspectRatio = "aspect-[4/3]", showOverlay =
         {showOverlay && (
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex items-end p-8">
             <div className="text-white">
-              <span className="text-[10px] font-bold uppercase tracking-widest text-blue-400 bg-blue-900/40 px-2 py-1 rounded">Click for details</span>
               <h4 className="text-xl font-bold mt-2">{images[currentIndex].title}</h4>
             </div>
           </div>
@@ -309,62 +312,85 @@ const ImageSlider = ({ customImages, aspectRatio = "aspect-[4/3]", showOverlay =
   );
 };
 
-const SpotlightCarousel = ({ images, speed = 4000, aspectRatio = "aspect-video" }) => {
+const SpotlightCarousel = ({ images, speed = 5000 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [selectedImage, setSelectedImage] = useState(null);
+
+  const nextSlide = () => setCurrentIndex((prev) => (prev + 1) % images.length);
+  const prevSlide = () => setCurrentIndex((prev) => (prev - 1 + images.length) % images.length);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % images.length);
-    }, speed);
+    const timer = setInterval(nextSlide, speed);
     return () => clearInterval(timer);
-  }, [images.length, speed]);
+  }, [speed, images.length]);
 
   return (
-    <div className={`relative w-full ${aspectRatio} rounded-3xl overflow-hidden border border-slate-800 shadow-2xl bg-slate-900 flex items-center justify-center p-8`}>
-      <div className="flex gap-8 w-full h-full items-center justify-center">
-        {images.map((img, idx) => {
-          const isActive = idx === currentIndex;
+    <div className="relative w-full py-16 px-4 group">
+      {/* Container with enhanced glass background */}
+      <div className="max-w-6xl mx-auto rounded-[48px] bg-slate-900/30 border border-white/5 p-6 md:p-10 relative overflow-hidden backdrop-blur-sm shadow-2xl">
+        {/* Subtle Ambient Glow */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-3/4 bg-blue-600/5 blur-[120px] pointer-events-none"></div>
 
-          if (!isActive && idx !== (currentIndex + 1) % images.length && idx !== (currentIndex - 1 + images.length) % images.length) {
-            return null;
-          }
+        <div className="relative h-[300px] md:h-[420px] flex items-center justify-center">
 
-          return (
-            <motion.div
-              key={idx}
-              animate={{
-                scale: isActive ? 1 : 0.85,
-                opacity: isActive ? 1 : 0.4,
-                filter: isActive ? "blur(0px)" : "blur(4px)",
-              }}
-              transition={{ duration: 0.8 }}
-              className={`relative h-full ${isActive ? 'w-2/5' : 'w-1/4'} rounded-2xl overflow-hidden cursor-pointer shadow-2xl border border-slate-700/50`}
-              onClick={() => setSelectedImage(img)}
-            >
-              <img src={img.src} alt={img.title} className="w-full h-full object-cover" />
-              {isActive && (
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex items-end p-6">
-                  <div className="text-white">
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-blue-400 bg-blue-900/40 px-2 py-1 rounded">Highlight View</span>
-                    <h5 className="text-lg font-bold mt-2 truncate">{img.title}</h5>
-                  </div>
-                </div>
-              )}
-            </motion.div>
-          );
-        })}
+
+
+          <div className="relative w-full h-full flex items-center justify-center">
+            {images.map((img, idx) => {
+              let offset = idx - currentIndex;
+              if (offset < -images.length / 2) offset += images.length;
+              if (offset > images.length / 2) offset -= images.length;
+
+              const isActive = offset === 0;
+              const isSide = Math.abs(offset) === 1;
+
+              return (
+                <motion.div
+                  key={idx}
+                  initial={false}
+                  animate={{
+                    x: offset * (window.innerWidth < 768 ? 220 : 420),
+                    scale: isActive ? 1.08 : 0.82,
+                    opacity: isActive ? 1 : (isSide ? 0.35 : 0),
+                    filter: isActive ? "blur(0px)" : "blur(10px)",
+                    zIndex: isActive ? 30 : 10,
+                  }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 200,
+                    damping: 25,
+                  }}
+                  className="absolute w-[260px] md:w-[500px] aspect-[16/10] rounded-[32px] overflow-hidden border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] cursor-pointer"
+                >
+                  {/* Active Card Inner Glow */}
+                  {isActive && (
+                    <div className="absolute inset-0 bg-blue-500/10 pointer-events-none z-10 border border-blue-500/30 rounded-[32px]"></div>
+                  )}
+
+                  <img
+                    src={img.src}
+                    alt={img.title}
+                    className="w-full h-full object-cover"
+                  />
+
+                  {isActive && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent flex flex-col justify-end p-8 md:p-10"
+                    >
+                      <h4 className="text-2xl md:text-3xl font-bold text-white tracking-tight">
+                        {img.title}
+                      </h4>
+                    </motion.div>
+                  )}
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+
+
       </div>
-
-      <AnimatePresence>
-        {selectedImage && (
-          <ImageModal
-            isOpen={!!selectedImage}
-            onClose={() => setSelectedImage(null)}
-            imageData={selectedImage}
-          />
-        )}
-      </AnimatePresence>
     </div>
   );
 };
@@ -386,15 +412,13 @@ const Hero = ({ onOpenModal }) => (
       >
         <div className="inline-block">
           {/* Main Heading */}
-          <h1 className="text-5xl md:text-7xl font-extrabold leading-tight">
+          <h1 className="text-5xl md:text-7xl font-extrabold leading-tight mb-2 whitespace-nowrap">
             <span className="text-white">Gen-Alpha </span>
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
-              Portable Lab
-            </span>
+            <span className="text-blue-500">Portable Lab</span>
           </h1>
 
           {/* Subtitle */}
-          <p className="mt-1 mb-1 text-lg md:text-xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-600 tracking-[0.2em]">
+          <p className="mt-1 mb-1 text-lg md:text-xl font-semibold text-blue-500 tracking-[0.2em]">
             One Lab. Infinite Possibilities
           </p>
         </div>
@@ -433,7 +457,6 @@ const Hero = ({ onOpenModal }) => (
     <div className="container mt-20">
       <div className="w-full mx-auto">
         <SpotlightCarousel
-          aspectRatio="aspect-[5/1]"
           speed={4000}
           images={[
             { src: "/assets/case.png", title: "Rugged Portability", info: "The lab is enclosed in a durable, military-grade case, making it easy to carry between classrooms or homes safely." },
@@ -451,117 +474,213 @@ const Hero = ({ onOpenModal }) => (
   </section>
 );
 
-const About = () => (
-  <section id="about" className="section-padding bg-slate-900/30">
-    <br></br>
-    <div className="container">
-      <div className="text-center max-w-3xl mx-auto mb-16">
-        <h2 className="section-title">Overview</h2>
-        <p className="text-slate-400">
-          Gen-Alpha Portable Lab combines hardware, software, learning content, and accessories into one portable unit, removing the need for a traditional electronics lab setup.
-        </p>
-      </div>
+const About = () => {
+  const [isExpanded, setIsExpanded] = useState(false);
 
-      <div className="grid md:grid-cols-[1fr_1.3fr] gap-12 items-center">
-        <div className="space-y-6">
-          {/* <div className="glass-card flex gap-5 p-6 border-l-4 border-l-blue-500">
-            <div className="shrink-0 w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center">
-              <Package className="text-blue-400" size={24} />
-            </div>
-            <div>
-              <h4 className="text-lg font-bold mb-1">Complete Hardware Kit</h4>
-              <p className="text-sm text-slate-400">Includes all sensors, actuators, breadboard, wires, connectors, and essential electronic components in one complete kit.</p>
-            </div>
-          </div> */}
-          {/* <div className="glass-card flex gap-5 p-6 border-l-4 border-l-purple-500">
-            <div className="shrink-0 w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center">
-              <BookOpen className="text-purple-400" size={24} />
-            </div>
-            <div>
-              <h4 className="text-lg font-bold mb-1">Curriculum-Aligned Projects</h4>
-              <p className="text-sm text-slate-400">Step-by-step guidance for 100+ experiments ranging from basic circuits to advanced robotics and IoT.</p>
-            </div>
-          </div> */}
-          <div className="glass-card flex gap-5 p-6 border-l-4 border-l-cyan-500">
-            <div className="shrink-0 w-12 h-12 rounded-xl bg-cyan-500/10 flex items-center justify-center">
-              <Cpu className="text-cyan-400" size={24} />
-            </div>
-            <div>
-              <h4 className="text-lg font-bold mb-1">Modular & Scalable</h4>
-              <p className="text-sm text-slate-400">A future-proof design that allows students to add new sensors and advanced modules as their skills progress.</p>
-            </div>
-          </div>
-          <div className="glass-card flex gap-5 p-6 border-l-4 border-l-blue-500">
-            <div className="shrink-0 w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center">
-              <Laptop className="text-blue-400" size={24} />
-            </div>
-            <div>
-              <h4 className="text-lg font-bold mb-1">Portable Learning Studio</h4>
-              <p className="text-sm text-slate-400">Transform any desk into a high-tech innovation lab without requiring expensive, fixed infrastructure.</p>
-            </div>
-          </div>
-          <div className="glass-card flex gap-5 p-6 border-l-4 border-l-purple-500">
-            <div className="shrink-0 w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center">
-              <ShieldCheck className="text-purple-400" size={24} />
-            </div>
-            <div>
-              <h4 className="text-lg font-bold mb-1">Safety First Design</h4>
-              <p className="text-sm text-slate-400">A pin-based, solder-free architecture ensures a safe and accessible learning environment for all ages.</p>
-            </div>
-          </div>
-          <div className="glass-card flex gap-5 p-6 border-l-4 border-l-blue-500">
-            <div className="shrink-0 w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center">
-              <Layers className="text-blue-400" size={24} />
-            </div>
-            <div>
-              <h4 className="text-lg font-bold mb-1">Complete Ecosystem</h4>
-              <p className="text-sm text-slate-400">A seamless integration of hardware, software, and learning resources in one unified platform.</p>
-            </div>
+  return (
+    <section id="about" className="section-padding bg-slate-900/30">
+      <br></br>
+      <div className="container">
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <h2 className="section-title">Overview</h2>
+          <p className="text-slate-400">
+            Gen-Alpha Portable Lab combines hardware, software, learning content, and accessories into one portable unit, removing the need for a traditional electronics lab setup.
+          </p>
+
+          {/* Read More button */}
+          <div className="mt-4">
+            <button
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="text-blue-400 hover:text-blue-300 font-semibold transition-colors inline-flex items-center gap-2"
+            >
+              {isExpanded ? 'Read Less' : 'Read More'}
+              <ChevronDown size={18} className={`transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`} />
+            </button>
           </div>
         </div>
 
-        <ImageSlider />
+        <div className="grid md:grid-cols-2 gap-12 items-start">
+          <div className="space-y-6">
+            {/* <div className="glass-card flex gap-5 p-6 border-l-4 border-l-blue-500">
+              <div className="shrink-0 w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center">
+                <Package className="text-blue-400" size={24} />
+              </div>
+              <div>
+                <h4 className="text-lg font-bold mb-1">Complete Hardware Kit</h4>
+                <p className="text-sm text-slate-400">Includes all sensors, actuators, breadboard, wires, connectors, and essential electronic components in one complete kit.</p>
+              </div>
+            </div> */}
+            {/* <div className="glass-card flex gap-5 p-6 border-l-4 border-l-purple-500">
+              <div className="shrink-0 w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center">
+                <BookOpen className="text-purple-400" size={24} />
+              </div>
+              <div>
+                <h4 className="text-lg font-bold mb-1">Curriculum-Aligned Projects</h4>
+                <p className="text-sm text-slate-400">Step-by-step guidance for 100+ experiments ranging from basic circuits to advanced robotics and IoT.</p>
+              </div>
+            </div> */}
+            <div className="glass-card flex gap-5 p-6 border-l-4 border-l-cyan-500">
+              <div className="shrink-0 w-12 h-12 rounded-xl bg-cyan-500/10 flex items-center justify-center">
+                <Cpu className="text-cyan-400" size={24} />
+              </div>
+              <div>
+                <h4 className="text-lg font-bold mb-1">Modular & Scalable</h4>
+                <p className="text-sm text-slate-400">A future-proof design that allows students to add new sensors and advanced modules as their skills progress.</p>
+              </div>
+            </div>
+            <div className="glass-card flex gap-5 p-6 border-l-4 border-l-blue-500">
+              <div className="shrink-0 w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center">
+                <Laptop className="text-blue-400" size={24} />
+              </div>
+              <div>
+                <h4 className="text-lg font-bold mb-1">Portable Learning Studio</h4>
+                <p className="text-sm text-slate-400">Transform any desk into a high-tech innovation lab without requiring expensive, fixed infrastructure.</p>
+              </div>
+            </div>
+            <div className="glass-card flex gap-5 p-6 border-l-4 border-l-purple-500">
+              <div className="shrink-0 w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center">
+                <ShieldCheck className="text-purple-400" size={24} />
+              </div>
+              <div>
+                <h4 className="text-lg font-bold mb-1">Safety First Design</h4>
+                <p className="text-sm text-slate-400">A pin-based, solder-free architecture ensures a safe and accessible learning environment for all ages.</p>
+              </div>
+            </div>
+
+            {/* Error-Detection - only shown when expanded */}
+            {isExpanded && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                transition={{ duration: 0.3 }}
+                className="glass-card flex gap-5 p-6 border-l-4 border-l-yellow-500"
+              >
+                <div className="shrink-0 w-12 h-12 rounded-xl bg-yellow-500/10 flex items-center justify-center">
+                  <ShieldCheck className="text-yellow-400" size={24} />
+                </div>
+                <div>
+                  <h4 className="text-lg font-bold mb-1">Error-Detection & Guided Learning</h4>
+                  <p className="text-sm text-slate-400">Intelligent error-detection that helps students identify wiring or logic mistakes in real time.</p>
+                </div>
+              </motion.div>
+            )}
+          </div>
+
+          {/* Right column - Image when collapsed, Expanded content when expanded */}
+          <div>
+            {/* Image - shown when not expanded */}
+            {!isExpanded && <ImageSlider />}
+
+            {/* Expanded content - shown when expanded */}
+            <AnimatePresence>
+              {isExpanded && (
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  transition={{ duration: 0.4 }}
+                  className="space-y-6"
+                >
+                  {/* What's Inside */}
+                  <div>
+                    <h3 className="text-2xl font-bold mb-3 text-white">What's Inside the Gen-Alpha Portable Lab</h3>
+                    <p className="text-slate-400 mb-6">
+                      The lab integrates a complete electronics and computing stack in one platform, providing everything students need for comprehensive hands-on learning.
+                    </p>
+                  </div>
+
+                  {/* Core Electronics */}
+                  <div className="glass-card p-6 border-l-4 border-l-blue-500">
+                    <div className="flex gap-4 items-start">
+                      <div className="shrink-0 w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center">
+                        <Cpu className="text-blue-400" size={24} />
+                      </div>
+                      <div>
+                        <h4 className="text-xl font-bold mb-2 text-white">Core Electronics</h4>
+                        <p className="text-slate-400">
+                          IC-555 timers, Arduino, Raspberry Pi, breadboards, digital multimeter/oscilloscope modules, and a wide range of sensors and actuators.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Coding & IoT */}
+                  <div className="glass-card p-6 border-l-4 border-l-purple-500">
+                    <div className="flex gap-4 items-start">
+                      <div className="shrink-0 w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center">
+                        <Terminal className="text-purple-400" size={24} />
+                      </div>
+                      <div>
+                        <h4 className="text-xl font-bold mb-2 text-white">Coding & IoT Capability</h4>
+                        <p className="text-slate-400">
+                          Supports programming, IoT experiments, and mini web-server projects using a pre-configured Raspberry Pi environment.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Why It Matters */}
+                  <div className="glass-card p-6 border-l-4 border-l-green-500">
+                    <div className="flex gap-4 items-start">
+                      <div className="shrink-0 w-12 h-12 rounded-xl bg-green-500/10 flex items-center justify-center">
+                        <Zap className="text-green-400" size={24} />
+                      </div>
+                      <div>
+                        <h4 className="text-xl font-bold mb-2 text-white">Why It Matters</h4>
+                        <p className="text-slate-400">
+                          The Gen-Alpha Portable Lab replaces fragmented kits and expensive labs with a single, affordable, scalable solution for institutions, CSR programs, and educators.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
       </div>
-    </div>
-    <br></br>
-    <br></br>
-  </section>
-);
+      <br></br>
+      <br></br>
+    </section>
+  );
+};
 
 const Statistics = () => (
   <section id="need" className="section-padding">
     <br></br>
     <div className="container">
-      <div className="text-center max-w-3xl mx-auto mb-16">
-        <h2 className="section-title">Need</h2>
-        <p className="text-slate-400">
+      <div className="text-center max-w-4xl mx-auto mb-16">
+        <h2 className="section-title">Problems with current system?</h2>
+        <p className="text-slate-500 text-[10px] uppercase tracking-wider mb-8">Source: UDISE+ reports, Ministry of Education, India.</p>
+
+        <p className="text-2xl md:text-3xl font-black text-slate-200 mb-12">
           Most students learn electronics through theory and diagrams. Hands-on exposure remains limited due to lack of lab infrastructure.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-        <div className="glass-card text-center p-10 border-b-4 border-b-blue-600">
-          <div className="text-5xl font-extrabold text-blue-400 mb-4">57%</div>
-          <h4 className="text-lg font-bold mb-2">Schools with Computers</h4>
-          <p className="text-sm text-slate-500">Basic digital literacy is improving, but practical labs lag behind.</p>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto mb-16">
+        <div className="glass-card text-center p-6 border-b-4 border-b-red-600/50">
+          <div className="text-4xl font-black text-red-500 mb-3">only 57%</div>
+          <h4 className="text-sm font-bold mb-2">Schools with Computers</h4>
+          <p className="text-xs text-slate-500">Basic digital literacy is improving, but practical labs lag behind.</p>
         </div>
-        <div className="glass-card text-center p-10 border-b-4 border-b-purple-600">
-          <div className="text-5xl font-extrabold text-purple-400 mb-4">54%</div>
-          <h4 className="text-lg font-bold mb-2">Schools with Internet</h4>
-          <p className="text-sm text-slate-500">Connectivity is growing, but experimental learning needs local power.</p>
+        <div className="glass-card text-center p-6 border-b-4 border-b-red-600/50">
+          <div className="text-4xl font-black text-red-500 mb-3">only 54%</div>
+          <h4 className="text-sm font-bold mb-2">Schools with Internet</h4>
+          <p className="text-xs text-slate-500">Connectivity is growing, but experimental learning needs local power.</p>
         </div>
-        <div className="glass-card text-center p-10 border-b-4 border-b-cyan-600">
-          <div className="text-5xl font-extrabold text-cyan-400 mb-4">&lt;25%</div>
-          <h4 className="text-lg font-bold mb-2">Functional Smart Classrooms</h4>
-          <p className="text-sm text-slate-500">Most schools lack the space for dedicated high-end electronics labs.</p>
+        <div className="glass-card text-center p-6 border-b-4 border-b-red-600/50">
+          <div className="text-4xl font-black text-red-500 mb-3">less than 25%</div>
+          <h4 className="text-sm font-bold mb-2">Functional Smart Classrooms</h4>
+          <p className="text-xs text-slate-500">Most schools lack the space for dedicated high-end electronics labs.</p>
         </div>
       </div>
 
-      <div className="flex flex-col md:flex-row items-center justify-between gap-8 p-8 bg-blue-600/10 rounded-3xl border border-blue-500/20">
-        <p className="text-slate-300 font-medium">Gen-Alpha Portable Lab brings a full hands-on learning experience into one portable device, without requiring a dedicated lab room.</p>
-        <div className="flex items-center gap-2 text-xs text-slate-500 whitespace-nowrap">
-          <Info size={14} />
-          <span>Source: UDISE+ reports, Ministry of Education, India.</span>
+      <div className="max-w-4xl mx-auto">
+        <h3 className="text-2xl font-black mb-6 text-white text-center">The Solution</h3>
+        <div className="p-8 bg-blue-600/10 rounded-3xl border border-blue-500/20 text-center">
+          <p className="text-slate-300 font-medium text-lg italic">Gen-Alpha Portable Lab brings a full hands-on learning experience into one portable device, without requiring a dedicated lab room.</p>
         </div>
       </div>
     </div>
@@ -574,9 +693,9 @@ const TargetUsers = () => (
   <section id="users" className="section-padding bg-slate-900/20">
     <br></br>
     <div className="container">
-      <h2 className="section-title">Audience</h2>
+      <h2 className="section-title">Who is it for?</h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
         {[
           {
             icon: <GraduationCap />,
@@ -608,6 +727,15 @@ const TargetUsers = () => (
               "For government bodies and CSR outreach partners.",
               "Used for large-scale deployment in rural settings.",
               "Bridges the gap in technical education infrastructure."
+            ]
+          },
+          {
+            icon: <Cpu />,
+            title: "Hobbyists",
+            list: [
+              "For makers and electronics enthusiasts exploring new projects.",
+              "Used as a comprehensive toolkit for rapid prototyping.",
+              "Enables creative experimentation with IoT and automation."
             ]
           }
         ].map((card, i) => (
@@ -649,7 +777,7 @@ const Features = () => {
     <section id="features" className="section-padding">
       <br></br>
       <div className="container">
-        <h2 className="section-title">Features</h2>
+        <h2 className="section-title">FAQ</h2>
 
         <div className="max-w-3xl mx-auto space-y-4">
           {faqData.map((item, i) => (
@@ -770,63 +898,75 @@ const Pricing = ({ onOpenModal }) => (
   </section>
 );
 
-const Footer = ({ onOpenModal }) => (
-  <footer id="contact" className="section-padding border-t border-slate-900 bg-black/40">
-    <br></br>
+const Footer = () => (
+  <footer id="contact" className="py-10 bg-black text-white border-t border-slate-900">
     <div className="container">
-      <div className="grid md:grid-cols-2 gap-12 mb-16 items-center">
-        <div>
-          <h2 className="text-4xl font-bold mb-6 leading-tight">Ready to transform hands-on learning?</h2>
-          <p className="text-slate-500 mb-8 max-w-md">Our team reviews every demo request personally to ensure we bring the right configuration to your institution.</p>
-          <button onClick={() => onOpenModal('demo')} className="px-10 py-5 bg-white text-black hover:bg-slate-200 rounded-2xl font-black transition-all shadow-xl active:scale-95">
-            Contact Us
-          </button>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-10">
+        {/* Column 1: Logo */}
+        <div className="space-y-4">
+          <div className="flex flex-col">
+            <span className="text-xl md:text-2xl font-bold tracking-tight leading-none whitespace-nowrap">
+              <span className="text-white">Gen-Alpha</span> <span className="text-blue-500">Portable Lab</span>
+            </span>
+            <span className="text-[10px] text-blue-500 font-semibold uppercase tracking-wider mt-1">One Lab . Infinite Possibilities</span>
+          </div>
         </div>
 
-        <div className="space-y-6">
-          <div className="flex gap-4 items-start">
-            <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center shrink-0">
-              <MapPin className="text-blue-400" size={20} />
-            </div>
-            <div>
-              <h5 className="font-bold">Address</h5>
-              <p className="text-slate-400 text-sm">Dashapatmaja Solutions Pvt. Ltd., Manipal</p>
-            </div>
+        {/* Column 2: Join the Revolution */}
+        <div className="space-y-5">
+          <h5 className="text-lg font-bold">Join the revolution</h5>
+          <p className="text-slate-400 text-sm leading-relaxed">
+            Explore how the right technology can elevate your business—enhancing efficiency, simplifying everyday operations, and paving the way for a more sustainable future. Together, let's turn ideas into impact.
+          </p>
+        </div>
+
+        {/* Column 3: Our Domains */}
+        <div className="space-y-5">
+          <h5 className="text-lg font-bold">Our Domains</h5>
+          <ul className="space-y-3 text-sm text-slate-400">
+            <li className="hover:text-blue-400 cursor-pointer transition-colors">Branding & Ecommerce</li>
+            <li className="hover:text-blue-400 cursor-pointer transition-colors">Ed-Tech</li>
+            <li className="hover:text-blue-400 cursor-pointer transition-colors">Research & Development</li>
+          </ul>
+        </div>
+
+        {/* Column 4: Team Solutions (Contact) */}
+        <div className="space-y-5 lg:pl-4">
+          <h5 className="text-lg font-bold">Team Solutions</h5>
+          <div className="space-y-3 text-sm text-slate-400">
+            <p className="flex items-center gap-2">
+              Email: <a href="mailto:director@dashapatmaja.in" className="hover:text-white transition-colors">director@dashapatmaja.in</a>
+            </p>
+            <p className="flex items-center gap-2">
+              Phone: +91 8861942440
+            </p>
           </div>
-          <div className="flex gap-4 items-start">
-            <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center shrink-0">
-              <Mail className="text-blue-400" size={20} />
-            </div>
-            <div>
-              <h5 className="font-bold">Email</h5>
-              <p className="text-slate-400 text-sm">dsplmanipal@gmail.com</p>
-            </div>
-          </div>
-          <div className="flex gap-4 items-start">
-            <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center shrink-0">
-              <Phone className="text-blue-400" size={20} />
-            </div>
-            <div>
-              <h5 className="font-bold">Phone</h5>
-              <p className="text-slate-400 text-sm">+91 77600 42810</p>
+          <div className="flex gap-5 pt-2">
+            <div className="flex gap-4 items-center text-white">
+              <a href="#" className="hover:text-blue-500 transition-colors"><Facebook size={20} /></a>
+              <a href="#" className="hover:text-slate-300 transition-colors font-bold text-xl leading-none">X</a>
+              <a href="#" className="hover:text-blue-700 transition-colors"><Linkedin size={20} /></a>
+              <a href="mailto:director@dashapatmaja.in" className="hover:text-blue-400 transition-colors"><Mail size={20} /></a>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="border-t border-slate-900 pt-10 flex flex-col md:flex-row justify-between items-center gap-6">
-        <div className="flex flex-col items-center md:items-start text-center md:text-left">
-          <div className="text-xl font-bold tracking-tight mb-1">
-            <span className="text-white">Gen-Alpha</span> <span className="text-blue-500">Portable Lab</span>
-          </div>
-          <p className="text-[10px] text-blue-400 font-bold uppercase tracking-[0.2em]">One Lab. Infinite Possibilities</p>
-        </div>
-        <p className="text-xs text-slate-600">&copy; {new Date().getFullYear()} Dashapatmaja Solutions Pvt. Ltd. All rights reserved.</p>
+      <div className="border-t border-slate-900 pt-8">
+        <a
+          href="https://dashapatmaja.in"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-xs text-slate-500 hover:text-blue-500 transition-colors"
+        >
+          &copy; 2025 dashapatmaja.in All rights reserved.
+        </a>
       </div>
     </div>
-    <br></br>
   </footer>
 );
+
+
 
 // --- Main App ---
 
@@ -844,13 +984,14 @@ export default function App() {
       <Navbar onOpenModal={() => openModal('demo')} />
 
       <Hero onOpenModal={openModal} />
-      <About />
       <Statistics />
+      <About />
       <TargetUsers />
-      <Features />
       <HowItWorks />
       <Pricing onOpenModal={openModal} />
-      <Footer onOpenModal={openModal} />
+      <Features />
+      <Footer />
+
 
       <AnimatePresence>
         {modalOpen && <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)} initialType={modalType} />}
