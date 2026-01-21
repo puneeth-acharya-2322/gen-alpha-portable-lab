@@ -39,9 +39,9 @@ const Navbar = ({ onOpenModal }) => {
   }, []);
 
   const navLinks = [
-    { name: 'What', target: 'hero' },
-    { name: 'Why', target: 'need' },
-    { name: 'Who', target: 'users' },
+    { name: 'Overview', target: 'about' },
+    { name: 'Need', target: 'need' },
+    { name: 'Audience', target: 'users' },
     { name: 'Features', target: 'features' },
     { name: 'Pricing', target: 'pricing' },
     { name: 'Contact us', target: 'contact' },
@@ -151,7 +151,7 @@ const Modal = ({ isOpen, onClose, initialType = 'demo' }) => {
           <X size={24} />
         </button>
 
-        <h2 className="text-2xl font-bold mb-2">Request a Demo or Deployment Discussion</h2>
+        <h2 className="text-2xl font-bold mb-2">Contact Us</h2>
         <p className="text-slate-400 mb-8">Our team reviews every request before reaching out.</p>
 
         <form className="space-y-8" onSubmit={(e) => { e.preventDefault(); alert("Request submitted! Our team will contact you soon."); onClose(); }}>
@@ -204,26 +204,10 @@ const Modal = ({ isOpen, onClose, initialType = 'demo' }) => {
             <textarea rows="3" className="w-full bg-slate-900/50 border border-slate-700 rounded-xl px-4 py-3 focus:border-blue-500 outline-none transition-all" placeholder="Tell us more about your requirements..."></textarea>
           </div>
 
-          {/* H: Request Type */}
-          <div className="space-y-4">
-            <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider block">How can we help you?</label>
-            <div className="grid grid-cols-2 gap-4">
-              {[
-                { id: 'demo', label: 'Request a Demo' },
-                { id: 'quote', label: 'Request Quotation' },
-                { id: 'pilot', label: 'Interest in Pilot' },
-                { id: 'csr', label: 'CSR Deployment' }
-              ].map((opt) => (
-                <label key={opt.id} className="flex items-center gap-3 p-4 bg-slate-800/30 border border-slate-700 rounded-xl cursor-pointer hover:bg-slate-800/50 transition-all">
-                  <input type="checkbox" defaultChecked={opt.id === initialType} className="w-5 h-5 rounded border-slate-600 bg-slate-900 text-blue-600 focus:ring-offset-[#0f172a]" />
-                  <span className="text-sm font-medium">{opt.label}</span>
-                </label>
-              ))}
-            </div>
-          </div>
+
 
           <button type="submit" className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-bold text-lg transition-all shadow-lg hover:shadow-blue-900/20 active:scale-[0.98]">
-            Request Demo and Details
+            SUBMIT
           </button>
         </form>
       </motion.div>
@@ -400,9 +384,21 @@ const Hero = ({ onOpenModal }) => (
         transition={{ duration: 0.8 }}
         viewport={{ once: true }}
       >
-        <h1 className="text-5xl md:text-7xl font-extrabold mb-6 leading-tight">
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">Gen-Alpha Portable Lab</span>
-        </h1>
+        <div className="inline-block">
+          {/* Main Heading */}
+          <h1 className="text-5xl md:text-7xl font-extrabold leading-tight">
+            <span className="text-white">Gen-Alpha </span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
+              Portable Lab
+            </span>
+          </h1>
+
+          {/* Subtitle */}
+          <p className="mt-1 mb-1 text-lg md:text-xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-600 tracking-[0.2em]">
+            One Lab. Infinite Possibilities
+          </p>
+        </div>
+
         <p className="text-lg text-slate-400 mb-8 max-w-xl">
           An all-in-one Electronics learning kit and portable lab for students from Class 6 to Engineering 2nd year.
           Students learn electronics, coding, and IoT by building real circuits.
@@ -460,7 +456,7 @@ const About = () => (
     <br></br>
     <div className="container">
       <div className="text-center max-w-3xl mx-auto mb-16">
-        <h2 className="section-title">What makes this a complete portable lab?</h2>
+        <h2 className="section-title">Overview</h2>
         <p className="text-slate-400">
           Gen-Alpha Portable Lab combines hardware, software, learning content, and accessories into one portable unit, removing the need for a traditional electronics lab setup.
         </p>
@@ -537,7 +533,7 @@ const Statistics = () => (
     <br></br>
     <div className="container">
       <div className="text-center max-w-3xl mx-auto mb-16">
-        <h2 className="section-title">The Need for Hands-on Electronics</h2>
+        <h2 className="section-title">Need</h2>
         <p className="text-slate-400">
           Most students learn electronics through theory and diagrams. Hands-on exposure remains limited due to lack of lab infrastructure.
         </p>
@@ -578,7 +574,7 @@ const TargetUsers = () => (
   <section id="users" className="section-padding bg-slate-900/20">
     <br></br>
     <div className="container">
-      <h2 className="section-title">Who is the Gen-Alpha Portable Lab designed for?</h2>
+      <h2 className="section-title">Audience</h2>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
@@ -653,7 +649,7 @@ const Features = () => {
     <section id="features" className="section-padding">
       <br></br>
       <div className="container">
-        <h2 className="section-title">What can students do with the Gen-Alpha Portable Lab?</h2>
+        <h2 className="section-title">Features</h2>
 
         <div className="max-w-3xl mx-auto space-y-4">
           {faqData.map((item, i) => (
@@ -729,7 +725,7 @@ const Pricing = ({ onOpenModal }) => (
     <br></br>
     <div className="container">
       <div className="text-center max-w-2xl mx-auto mb-16">
-        <h2 className="section-title">How much does it cost?</h2>
+        <h2 className="section-title">Pricing</h2>
         <p className="text-slate-400">Pricing depends on configuration and usage needs. Final pricing is shared after understanding your specific requirements.</p>
       </div>
 
