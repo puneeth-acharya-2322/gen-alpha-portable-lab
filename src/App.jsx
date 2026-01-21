@@ -264,13 +264,15 @@ const ImageModal = ({ isOpen, onClose, imageData }) => {
   );
 };
 
-const ImageSlider = () => {
-  const images = [
+const ImageSlider = ({ customImages, aspectRatio = "aspect-[4/3]", showOverlay = true }) => {
+  const defaultImages = [
     { src: "/assets/closedcase.png", title: "Rugged Portability", info: "Military-grade enclosure designed for safe transport between classrooms and remote learning environments." },
     { src: "/assets/slide1.png", title: "All-in-One Integration", info: "Seamlessly combines a high-performance tablet, full breadboard, and tactile keyboard for a complete engineering experience." },
     { src: "/assets/caseslide3.png", title: "Intelligent Learning Interface", info: "Features a sophisticated digital overlay for real-time circuit visualization and experiment guidance." },
     { src: "/assets/studentslide2.png", title: "Collaborative Discovery", info: "Optimized for teamwork, allowing students to build, test, and innovate on real-world electronics projects together." }
   ];
+
+  const images = customImages || defaultImages;
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -286,7 +288,7 @@ const ImageSlider = () => {
     <div className="relative group">
       <div className="absolute -inset-4 bg-blue-500/5 blur-3xl opacity-0 group-hover:opacity-100 transition duration-1000"></div>
 
-      <div className="relative w-full aspect-video rounded-3xl overflow-hidden border border-slate-800 shadow-2xl cursor-pointer" onClick={() => setSelectedImage(images[currentIndex])}>
+      <div className={`relative w-full ${aspectRatio} rounded-3xl overflow-hidden border border-slate-800 shadow-2xl cursor-pointer`} onClick={() => setSelectedImage(images[currentIndex])}>
         <AnimatePresence mode="wait">
           <motion.img
             key={currentIndex}
@@ -300,12 +302,74 @@ const ImageSlider = () => {
           />
         </AnimatePresence>
 
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex items-end p-8">
-          <div className="text-white">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-blue-400 bg-blue-900/40 px-2 py-1 rounded">Click for details</span>
-            <h4 className="text-xl font-bold mt-2">{images[currentIndex].title}</h4>
+        {showOverlay && (
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex items-end p-8">
+            <div className="text-white">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-blue-400 bg-blue-900/40 px-2 py-1 rounded">Click for details</span>
+              <h4 className="text-xl font-bold mt-2">{images[currentIndex].title}</h4>
+            </div>
           </div>
-        </div>
+        )}
+      </div>
+
+      <AnimatePresence>
+        {selectedImage && (
+          <ImageModal
+            isOpen={!!selectedImage}
+            onClose={() => setSelectedImage(null)}
+            imageData={selectedImage}
+          />
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
+const SpotlightCarousel = ({ images, speed = 4000, aspectRatio = "aspect-video" }) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentIndex((prev) => (prev + 1) % images.length);
+    }, speed);
+    return () => clearInterval(timer);
+  }, [images.length, speed]);
+
+  return (
+    <div className={`relative w-full ${aspectRatio} rounded-3xl overflow-hidden border border-slate-800 shadow-2xl bg-slate-900 flex items-center justify-center p-8`}>
+      <div className="flex gap-8 w-full h-full items-center justify-center">
+        {images.map((img, idx) => {
+          const isActive = idx === currentIndex;
+
+          if (!isActive && idx !== (currentIndex + 1) % images.length && idx !== (currentIndex - 1 + images.length) % images.length) {
+            return null;
+          }
+
+          return (
+            <motion.div
+              key={idx}
+              animate={{
+                scale: isActive ? 1 : 0.85,
+                opacity: isActive ? 1 : 0.4,
+                filter: isActive ? "blur(0px)" : "blur(4px)",
+              }}
+              transition={{ duration: 0.8 }}
+              className={`relative h-full ${isActive ? 'w-2/5' : 'w-1/4'} rounded-2xl overflow-hidden cursor-pointer shadow-2xl border border-slate-700/50`}
+              onClick={() => setSelectedImage(img)}
+            >
+              <img src={img.src} alt={img.title} className="w-full h-full object-cover" />
+              {isActive && (
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex items-end p-6">
+                  <div className="text-white">
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-blue-400 bg-blue-900/40 px-2 py-1 rounded">Highlight View</span>
+                    <h5 className="text-lg font-bold mt-2 truncate">{img.title}</h5>
+                  </div>
+                </div>
+              )}
+            </motion.div>
+          );
+        })}
       </div>
 
       <AnimatePresence>
@@ -369,19 +433,21 @@ const Hero = ({ onOpenModal }) => (
       </motion.div>
     </div>
 
-    {/* Horizontal Strip */}
-    <div className="container mt-20 grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div className="h-64 rounded-3xl overflow-hidden border border-slate-800 shadow-lg group">
-        <img src="/assets/case.png" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Kit closed" />
-      </div>
-      <div className="h-64 rounded-3xl overflow-hidden border border-slate-800 shadow-lg group">
-        <img src="/assets/fullbox.png" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="Tablet interface" />
-      </div>
-      <div className="h-64 rounded-3xl overflow-hidden border border-slate-800 shadow-lg flex flex-col justify-center items-center bg-slate-900 font-bold p-8 text-center group">
-        <div className="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-          <Zap className="text-white" size={24} />
-        </div>
-        <p className="text-sm text-slate-500 mt-2 font-normal">Building real experiments from class 6 to engineering.</p>
+    {/* Horizontal Strip - Single Wide Spotlight Carousel */}
+    <div className="container mt-20">
+      <div className="w-full mx-auto">
+        <SpotlightCarousel
+          aspectRatio="aspect-[5/1]"
+          speed={4000}
+          images={[
+            { src: "/assets/case.png", title: "Rugged Portability", info: "The lab is enclosed in a durable, military-grade case, making it easy to carry between classrooms or homes safely." },
+            { src: "/assets/closedcase.png", title: "Safe Transport", info: "Ruggedized exterior protects delicate sensors and components during travel." },
+            { src: "/assets/fullbox.png", title: "All-in-One System", info: "A complete integration of a high-performance tablet, breadboard, and essential power modules in a single unit." },
+            { src: "/assets/slide1.png", title: "Tactile Learning", info: "Features a physical keyboard and breadboard for real hands-on engineering experience." },
+            { src: "/assets/caseslide3.png", title: "Intelligent Interface", info: "Features a digital overlay for real-time circuit visualization and experiment guidance." },
+            { src: "/assets/studentslide2.png", title: "Collaborative Discovery", info: "Optimized for teamwork, allowing students to innovate on real-world electronics projects together." }
+          ]}
+        />
       </div>
     </div>
     <br></br>
