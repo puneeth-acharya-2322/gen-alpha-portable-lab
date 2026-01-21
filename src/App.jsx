@@ -63,8 +63,8 @@ const Navbar = ({ onOpenModal }) => {
           </span>
 
           <p className="text-[10px] font-bold uppercase tracking-[0.55em] text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-600">
-            One Lab. Infinite Possibilities
-          </p>
+  One Lab<span className="-ml-[0.55em]">.</span> Infinite Possibilities<span className="-ml-[0.55em]">.</span>
+</p>
         </div>
 
         {/* Desktop Nav */}
@@ -332,56 +332,88 @@ const SpotlightCarousel = ({ images, speed = 5000 }) => {
 
   return (
     <div className="relative w-full py-16 px-4 group">
+      
+      {/* Carousel Container */}
       <div className="relative h-[300px] md:h-[420px] flex items-center justify-center">
-        <div className="relative w-full h-full flex items-center justify-center">
+        
+        {/* Left Button */}
+        <button 
+          onClick={prevSlide}
+          className="absolute left-0 md:left-10 z-50 p-3 bg-slate-900/50 hover:bg-blue-600 text-white rounded-full backdrop-blur-md transition-all border border-slate-700 hover:border-blue-500 shadow-lg active:scale-90"
+        >
+          <ChevronLeft size={24} />
+        </button>
+
+        {/* Right Button */}
+        <button 
+          onClick={nextSlide}
+          className="absolute right-0 md:right-10 z-50 p-3 bg-slate-900/50 hover:bg-blue-600 text-white rounded-full backdrop-blur-md transition-all border border-slate-700 hover:border-blue-500 shadow-lg active:scale-90"
+        >
+          <ChevronRight size={24} />
+        </button>
+
+        <div className="relative w-full h-full flex items-center justify-center perspective-1000">
           {images.map((img, idx) => {
             let offset = idx - currentIndex;
+            // Circular Logic
             if (offset < -images.length / 2) offset += images.length;
             if (offset > images.length / 2) offset -= images.length;
 
             const isActive = offset === 0;
             const isSide = Math.abs(offset) === 1;
 
+            // Don't render cards that are far off-screen to save resources
+            if (Math.abs(offset) > 2) return null; 
+
             return (
               <motion.div
                 key={idx}
                 initial={false}
                 animate={{
-                  x: offset * (window.innerWidth < 768 ? 220 : 420),
-                  scale: isActive ? 1.08 : 0.82,
-                  opacity: isActive ? 1 : (isSide ? 0.35 : 0),
-                  filter: isActive ? "blur(0px)" : "blur(10px)",
+                  x: offset * (window.innerWidth < 768 ? 220 : 420), // Position
+                  scale: isActive ? 1.1 : 0.85, // Scale
+                  opacity: isActive ? 1 : (isSide ? 0.6 : 0), // Opacity
                   zIndex: isActive ? 30 : 10,
                 }}
                 transition={{
                   type: "spring",
-                  stiffness: 200,
-                  damping: 25,
+                  stiffness: 300, // Higher stiffness = faster snap
+                  damping: 30,    // Higher damping = less wobble
+                  mass: 0.8       // Lighter mass = faster movement
                 }}
-                className="absolute w-[260px] md:w-[500px] aspect-[16/10] rounded-[32px] overflow-hidden border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] cursor-pointer"
+                className="absolute w-[260px] md:w-[500px] aspect-[16/10] rounded-[32px] overflow-hidden border border-white/10 shadow-2xl cursor-pointer bg-slate-900 will-change-transform"
+                onClick={() => {
+                    if (offset === 1) nextSlide();
+                    if (offset === -1) prevSlide();
+                }}
               >
-                {/* Active Card Inner Glow */}
-                {isActive && (
-                  <div className="absolute inset-0 bg-blue-500/10 pointer-events-none z-10 border border-blue-500/30 rounded-[32px]"></div>
-                )}
-
                 <img
                   src={img.src}
                   alt={img.title}
                   className="w-full h-full object-cover"
+                  loading="eager"
                 />
 
-                {isActive && (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent flex flex-col justify-end p-8 md:p-10"
-                  >
-                    <h4 className="text-2xl md:text-3xl font-bold text-white tracking-tight">
-                      {img.title}
-                    </h4>
-                  </motion.div>
-                )}
+                {/* Text Overlay */}
+                <motion.div
+                  animate={{ opacity: isActive ? 1 : 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent flex flex-col justify-end p-6 md:p-10 text-left"
+                >
+                  <h4 className="text-xl md:text-3xl font-bold text-white tracking-tight mb-2 drop-shadow-md">
+                    {img.title}
+                  </h4>
+                  <p className="text-xs md:text-sm text-slate-200 line-clamp-2 leading-relaxed drop-shadow-sm">
+                    {img.info}
+                  </p>
+                </motion.div>
+
+                {/* Active Glow Border */}
+                <motion.div 
+                    animate={{ opacity: isActive ? 1 : 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="absolute inset-0 border-2 border-blue-500/50 rounded-[32px] pointer-events-none" 
+                />
               </motion.div>
             );
           })}
@@ -394,63 +426,86 @@ const SpotlightCarousel = ({ images, speed = 5000 }) => {
 // --- Sections ---
 
 const Hero = ({ onOpenModal }) => (
-  <section id="hero" className="min-height-[100vh] flex flex-col justify-center pt-32 pb-20 relative overflow-hidden">
+  <section id="hero" className="min-h-[100vh] flex flex-col justify-center pt-32 pb-20 relative overflow-hidden">
     {/* Glow Effects */}
     <div className="absolute top-1/4 -left-20 w-96 h-96 bg-blue-600/20 blur-[120px] pointer-events-none"></div>
     <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-purple-600/10 blur-[120px] pointer-events-none"></div>
 
-    <div className="container grid md:grid-cols-[1fr_1.4fr] gap-12 items-center">
+    {/* 1. Removed 'items-center': This allows the grid items to stretch to equal height (default behavior).
+      2. Both columns will now be the same height.
+    */}
+    <div className="container grid grid-cols-1 md:grid-cols-2 gap-12">
+      
+      {/* Left Side: Text Content */}
+      {/* Added 'flex flex-col justify-center' to keep text centered vertically within its stretched container */}
       <motion.div
         initial={{ opacity: 0, x: -50 }}
         whileInView={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.8 }}
         viewport={{ once: true }}
+        className="flex flex-col justify-center" 
       >
         <div className="inline-block">
-          {/* Main Heading */}
           <h1 className="text-5xl md:text-7xl font-extrabold leading-tight">
             <span className="text-white">Gen-Alpha </span>
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500"> Portable Lab </span> </h1>
-          {/* Subtitle */}
-          <p className="mt-1 mb-1 text-lg md:text-xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-600 tracking-[0.2em]">
-            One Lab. Infinite Possibilities </p> </div>
-        <br></br>
-        <p className="text-lg text-slate-400 mb-8 max-w-xl">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
+              Portable Lab
+            </span>
+          </h1>
+          
+          <p className="mt-2 mb-6 text-lg md:text-xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-600 tracking-[0.2em]">
+  ONE LAB<span className="-ml-[0.2em]">.</span> INFINITE POSSIBILITIES<span className="-ml-[0.2em]">.</span>
+</p>
+        </div>
+
+        <p className="mt-4 text-lg text-slate-400 mb-6 max-w-xl leading-relaxed">
           An all-in-one Electronics learning kit and portable lab for students from Class 6 to Engineering 2nd year.
           Students learn electronics, coding, and IoT by building real circuits.
         </p>
-        <div className="flex flex-wrap gap-4 mb-10">
-          <button
-            onClick={() => onOpenModal('demo')}
-            className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold text-sm transition-all shadow-lg shadow-blue-900/20 flex items-center gap-1.5"
-          >
-            Get In Touch <ChevronRight size={13} />
-          </button>
-        </div>
 
-        <div className="flex items-center gap-3 text-slate-500 text-sm">
+        <div className="flex items-center gap-3 text-slate-500 text-sm font-medium mb-8">
           <Package size={18} className="text-blue-500" />
           <span>Includes all required sensors, wires, and components.</span>
-        </div><br></br>
-      </motion.div >
+        </div>
 
+        <div className="flex flex-wrap gap-4 mb-2">
+          <button
+            onClick={() => onOpenModal('demo')}
+            className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-base transition-all shadow-lg shadow-blue-900/20 flex items-center gap-2"
+          >
+            Get In Touch <ChevronRight size={16} />
+          </button>
+        </div>
+      </motion.div>
+
+      {/* Right Side: Image */}
+      {/* Added 'md:h-full' to force the container to take full height on desktop */}
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
         whileInView={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.8 }}
         viewport={{ once: true }}
-        className="relative"
+        className="relative md:h-full"
       >
-        <div className="relative group">
+        {/* Added 'h-full' to the wrapper */}
+        <div className="relative group md:h-full w-full">
           <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-3xl blur opacity-30 group-hover:opacity-50 transition duration-1000"></div>
-          <img src="/assets/student_using_kit_v2.jpg" alt="Student using kit" className="relative rounded-3xl shadow-2xl border border-slate-700 group-hover:scale-[1.02] transition-transform duration-500" />
-        </div><br></br><br></br>
-
+          
+          {/* Image Changes:
+             1. 'md:h-full': Forces image height to match the text column on desktop.
+             2. 'object-cover': Ensures image fills the height without stretching/distorting (it fits like a background image).
+          */}
+          <img 
+            src="/assets/student_using_kit_v2.jpg" 
+            alt="Student using kit" 
+            className="relative w-full md:h-full object-cover rounded-3xl shadow-2xl border border-slate-700 group-hover:scale-[1.005] transition-transform duration-500" 
+          />
+        </div>
       </motion.div>
-    </div >
+    </div>
 
-    {/* Horizontal Strip - Single Wide Spotlight Carousel */}
-    < div className="container mt-20" >
+    {/* Horizontal Strip */}
+    <div className="container mt-20">
       <div className="w-full mx-auto">
         <SpotlightCarousel
           speed={4000}
@@ -464,10 +519,8 @@ const Hero = ({ onOpenModal }) => (
           ]}
         />
       </div>
-    </div >
-    <br></br>
-
-  </section >
+    </div>
+  </section>
 );
 
 const About = () => {
@@ -648,34 +701,57 @@ const Statistics = () => (
     <div className="container">
 
       <div className="text-center max-w-3xl mx-auto mb-16">
-        <h2 className="section-title">Needs</h2>
-        <p className="text-slate-400">
-          Most students learn electronics through theory and diagrams. Hands-on exposure remains limited due to lack of lab infrastructure.
-        </p>
+        <h2 className="section-title">Problems with current system?</h2>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto mb-16">
+        {/* Card 1 */}
         <div className="glass-card text-center p-6 border-b-4 border-b-red-600/50">
-          <div className="text-4xl font-black text-red-500 mb-3">only 57%</div>
-          <h4 className="text-sm font-bold mb-2">Schools with Computers</h4>
-          <p className="text-xs text-slate-500">Basic digital literacy is improving, but practical labs lag behind.</p>
+          <div className="text-4xl font-black text-red-500 mb-3">
+            <span className="text-2xl font-bold align-baseline mr-1">only</span>
+            57%
+          </div>
+          {/* Increased to text-lg */}
+          <h4 className="text-lg font-bold mb-2">Schools with Computers</h4>
+          {/* Increased to text-sm */}
+          <p className="text-sm text-slate-400">Basic digital literacy is improving, but practical labs lag behind.</p>
         </div>
+
+        {/* Card 2 */}
         <div className="glass-card text-center p-6 border-b-4 border-b-red-600/50">
-          <div className="text-4xl font-black text-red-500 mb-3">only 54%</div>
-          <h4 className="text-sm font-bold mb-2">Schools with Internet</h4>
-          <p className="text-xs text-slate-500">Connectivity is growing, but experimental learning needs local power.</p>
+          <div className="text-4xl font-black text-red-500 mb-3">
+            <span className="text-2xl font-bold align-baseline mr-1">only</span>
+            54%
+          </div>
+          {/* Increased to text-lg */}
+          <h4 className="text-lg font-bold mb-2">Schools with Internet</h4>
+          {/* Increased to text-sm */}
+          <p className="text-sm text-slate-400">Connectivity is growing, but experimental learning needs local power.</p>
         </div>
+
+        {/* Card 3 */}
         <div className="glass-card text-center p-6 border-b-4 border-b-red-600/50">
-          <div className="text-4xl font-black text-red-500 mb-3">less than 25%</div>
-          <h4 className="text-sm font-bold mb-2">Functional Smart Classrooms</h4>
-          <p className="text-xs text-slate-500">Most schools lack the space for dedicated high-end electronics labs.</p>
+          <div className="text-4xl font-black text-red-500 mb-3">
+            <span className="text-2xl font-bold align-baseline mr-1">less than</span>
+            25%
+          </div>
+          {/* Increased to text-lg */}
+          <h4 className="text-lg font-bold mb-2">Functional Smart Classrooms</h4>
+          {/* Increased to text-sm */}
+          <p className="text-sm text-slate-400">Most schools lack the space for dedicated high-end electronics labs.</p>
         </div>
       </div>
-
+      <div className="text-center max-w-3xl mx-auto mb-16">
+<p className="text-xl text-slate-400 leading-relaxed">
+          Most students learn electronics through theory and diagrams. Hands-on exposure remains limited due to lack of lab infrastructure.
+        </p>
+        </div>
       <div className="max-w-4xl mx-auto">
-        <h3 className="text-2xl font-black mb-6 text-white text-center">The Solution</h3>
+        <h3 className="text-3xl font-black mb-6 text-white text-center">The Solution</h3>
         <div className="p-8 bg-blue-600/10 rounded-3xl border border-blue-500/20 text-center">
-          <p className="text-slate-300 font-medium text-lg italic">Gen-Alpha Portable Lab brings a full hands-on learning experience into one portable device, without requiring a dedicated lab room.</p>
+          <p className="text-slate-300 font-medium text-lg ">
+            <span className="font-bold text-white ">Gen-Alpha Portable Lab</span> brings a full hands-on learning experience into one portable device, without requiring a dedicated lab room.
+          </p>
         </div>
       </div>
     </div>
@@ -772,7 +848,7 @@ const Features = () => {
     <section id="features" className="section-padding">
       <br></br>
       <div className="container">
-        <h2 className="section-title">FAQ</h2>
+        <h2 className="section-title">FAQ's</h2>
 
         <div className="max-w-3xl mx-auto space-y-4">
           {faqData.map((item, i) => (
@@ -908,9 +984,10 @@ const Footer = () => (
               </span>
             </span>
 
-            <span className="text-[10px] font-semibold uppercase tracking-wider mt-1 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-600">
-              One Lab . Infinite Possibilities
-            </span>
+            {/* Reduced tracking to 0.35em to prevent overflow while keeping the wide look */}
+            <p className="text-[10px] font-bold uppercase tracking-[0.35em] mt-1 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-600 whitespace-nowrap">
+              One Lab<span className="-ml-[0.35em]">.</span> Infinite Possibilities<span className="-ml-[0.35em]">.</span>
+            </p>
           </div>
         </div>
 
