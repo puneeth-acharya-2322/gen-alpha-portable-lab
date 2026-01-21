@@ -45,9 +45,9 @@ const Navbar = ({ onOpenModal }) => {
   const navLinks = [
     { name: 'Impact', target: 'need' },
     { name: 'Overview', target: 'about' },
-    { name: 'FAQ', target: 'features' },
     { name: 'For Whom', target: 'users' },
     { name: 'Pricing', target: 'pricing' },
+    { name: 'FAQ', target: 'features' },
     { name: 'Contact us', target: 'contact' },
   ];
 
@@ -902,12 +902,18 @@ const Footer = () => (
         <div className="space-y-4">
           <div className="flex flex-col">
             <span className="text-xl md:text-2xl font-bold tracking-tight leading-none whitespace-nowrap">
-              <span className="text-white">Gen-Alpha</span> <span className="text-blue-500">Portable Lab</span>
+              <span className="text-white">Gen-Alpha</span>{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">
+                Portable Lab
+              </span>
             </span>
-            <span className="text-[10px] text-blue-500 font-semibold uppercase tracking-wider mt-1">One Lab . Infinite Possibilities</span>
-          </div>
 
+            <span className="text-[10px] font-semibold uppercase tracking-wider mt-1 text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-purple-600">
+              One Lab . Infinite Possibilities
+            </span>
+          </div>
         </div>
+
 
         {/* Column 2: Join the Revolution */}
         <div className="space-y-5">
