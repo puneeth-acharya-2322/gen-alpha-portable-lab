@@ -332,71 +332,60 @@ const SpotlightCarousel = ({ images, speed = 5000 }) => {
 
   return (
     <div className="relative w-full py-16 px-4 group">
-      {/* Container with enhanced glass background */}
-      <div className="max-w-6xl mx-auto rounded-[48px] bg-slate-900/30 border border-white/5 p-6 md:p-10 relative overflow-hidden backdrop-blur-sm shadow-2xl">
-        {/* Subtle Ambient Glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-3/4 bg-blue-600/5 blur-[120px] pointer-events-none"></div>
+      <div className="relative h-[300px] md:h-[420px] flex items-center justify-center">
+        <div className="relative w-full h-full flex items-center justify-center">
+          {images.map((img, idx) => {
+            let offset = idx - currentIndex;
+            if (offset < -images.length / 2) offset += images.length;
+            if (offset > images.length / 2) offset -= images.length;
 
-        <div className="relative h-[300px] md:h-[420px] flex items-center justify-center">
+            const isActive = offset === 0;
+            const isSide = Math.abs(offset) === 1;
 
+            return (
+              <motion.div
+                key={idx}
+                initial={false}
+                animate={{
+                  x: offset * (window.innerWidth < 768 ? 220 : 420),
+                  scale: isActive ? 1.08 : 0.82,
+                  opacity: isActive ? 1 : (isSide ? 0.35 : 0),
+                  filter: isActive ? "blur(0px)" : "blur(10px)",
+                  zIndex: isActive ? 30 : 10,
+                }}
+                transition={{
+                  type: "spring",
+                  stiffness: 200,
+                  damping: 25,
+                }}
+                className="absolute w-[260px] md:w-[500px] aspect-[16/10] rounded-[32px] overflow-hidden border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] cursor-pointer"
+              >
+                {/* Active Card Inner Glow */}
+                {isActive && (
+                  <div className="absolute inset-0 bg-blue-500/10 pointer-events-none z-10 border border-blue-500/30 rounded-[32px]"></div>
+                )}
 
+                <img
+                  src={img.src}
+                  alt={img.title}
+                  className="w-full h-full object-cover"
+                />
 
-          <div className="relative w-full h-full flex items-center justify-center">
-            {images.map((img, idx) => {
-              let offset = idx - currentIndex;
-              if (offset < -images.length / 2) offset += images.length;
-              if (offset > images.length / 2) offset -= images.length;
-
-              const isActive = offset === 0;
-              const isSide = Math.abs(offset) === 1;
-
-              return (
-                <motion.div
-                  key={idx}
-                  initial={false}
-                  animate={{
-                    x: offset * (window.innerWidth < 768 ? 220 : 420),
-                    scale: isActive ? 1.08 : 0.82,
-                    opacity: isActive ? 1 : (isSide ? 0.35 : 0),
-                    filter: isActive ? "blur(0px)" : "blur(10px)",
-                    zIndex: isActive ? 30 : 10,
-                  }}
-                  transition={{
-                    type: "spring",
-                    stiffness: 200,
-                    damping: 25,
-                  }}
-                  className="absolute w-[260px] md:w-[500px] aspect-[16/10] rounded-[32px] overflow-hidden border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] cursor-pointer"
-                >
-                  {/* Active Card Inner Glow */}
-                  {isActive && (
-                    <div className="absolute inset-0 bg-blue-500/10 pointer-events-none z-10 border border-blue-500/30 rounded-[32px]"></div>
-                  )}
-
-                  <img
-                    src={img.src}
-                    alt={img.title}
-                    className="w-full h-full object-cover"
-                  />
-
-                  {isActive && (
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent flex flex-col justify-end p-8 md:p-10"
-                    >
-                      <h4 className="text-2xl md:text-3xl font-bold text-white tracking-tight">
-                        {img.title}
-                      </h4>
-                    </motion.div>
-                  )}
-                </motion.div>
-              );
-            })}
-          </div>
+                {isActive && (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent flex flex-col justify-end p-8 md:p-10"
+                  >
+                    <h4 className="text-2xl md:text-3xl font-bold text-white tracking-tight">
+                      {img.title}
+                    </h4>
+                  </motion.div>
+                )}
+              </motion.div>
+            );
+          })}
         </div>
-
-
       </div>
     </div>
   );
