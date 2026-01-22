@@ -43,10 +43,10 @@ const Navbar = ({ onOpenModal }) => {
   }, []);
 
   const navLinks = [
-    { name: 'Impact', target: 'need' },
+    { name: 'The Gap', target: 'need' },
     { name: 'Overview', target: 'about' },
-    { name: 'Users', target: 'users' },
-    { name: 'Pricing', target: 'pricing' },
+    { name: 'Target Audience', target: 'users' },
+    { name: 'Our Plans', target: 'pricing' },
     { name: 'FAQs', target: 'features' },
     { name: 'Contact us', target: 'contact' },
   ];
@@ -975,7 +975,7 @@ const Features = () => {
               onClick={() => setShowAll(!showAll)}
               className="text-blue-400 hover:text-blue-300 font-semibold transition-colors inline-flex items-center gap-2"
             >
-              {showAll ? 'Read Less Questions' : 'Read More Questions'}
+              {showAll ? 'Read Less' : 'Read More...'}
               <ChevronDown size={18} className={`transition-transform duration-300 ${showAll ? 'rotate-180' : ''}`} />
             </button>
           </div>
